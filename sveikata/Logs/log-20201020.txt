@@ -1,0 +1,2 @@
+2020-10-20 16:45:54.241 +03:00 [ERR] Service not found.
+2020-10-20 17:07:46.773 +03:00 [ERR] Disease not found.
