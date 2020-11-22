@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using sveikata.DTOs.User;
+using sveikata.Models;
 using sveikata.DTOs;
 using sveikata.Mappers;
 using sveikata.Models;
@@ -15,6 +17,8 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using sveikata.Security;
+using AutoMapper;
 
 namespace sveikata.Services
 {
@@ -22,24 +26,63 @@ namespace sveikata.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly ICommentRepository _commentRepository;
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly IMapper _mapper;
         private readonly AppDbContext _context;
+        private readonly IConfiguration _config;
 
-        public UserService(IUserRepository userRepository, ICommentRepository commentRepository, AppDbContext context)
+        public UserService(IUserRepository userRepository,
+                           IPasswordHasher passwordHasher,
+                           IMapper mapper,
+                           ICommentRepository commentRepository, 
+                           AppDbContext context,
+                           IConfiguration config)
         {
             _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
             _commentRepository = commentRepository;
+            _mapper = mapper;
             _context = context;
+            _config = config;
         }
 
-        public async Task<UserResponse> Create(UserDTO newUser)
+        public async Task<Service1Response<AuthenticatedUserDTO>> AuthenticateUserAsync(PostUserDTO UserCredentials)
         {
+            var user = await _userRepository.FindByEmail(UserCredentials.Email);
+            if (user == null)
+            {
+                var errorMessage = $"Password or login is incorrect";
+                Log.Error(errorMessage);
+                return new Service1Response<AuthenticatedUserDTO> { Message = errorMessage, Success = false };
+            }
+
+            if (!_passwordHasher.PasswordMatches(UserCredentials.Password, user.Password))
+            {
+                var errorMessage = $"Password or login is incorrect";
+                Log.Error(errorMessage);
+                return new Service1Response<AuthenticatedUserDTO> { Message = errorMessage, Success = false };
+            }
+
+            var token = GenerateJwtToken(user);
+            var authenticatedUserDTO = _mapper.Map<AuthenticatedUserDTO>(user);
+            authenticatedUserDTO.Token = token;
+            return new Service1Response<AuthenticatedUserDTO> { Data = authenticatedUserDTO };
+        }
+
+        public async Task<UserResponse> Create(UserDTO newUser, params ERole[] userRoles)
+        {
+            var existingUser = await _userRepository.FindByEmail(newUser.Email);
+            if (existingUser != null)
+            {
+                string errorMessage = $"User with Email: {existingUser.Email} already exists";
+                return new UserResponse(errorMessage);
+            }
+
             var user = UserMapper.Map(newUser);
 
-           
             try
             {
-                user.RefreshToken = GenerateRefreshToken();
-                await _userRepository.Create(user);
+                await _userRepository.Create(user, userRoles);
                 await _context.SaveChangesAsync();
                 return new UserResponse(UserMapper.Map(user));
             }
@@ -129,34 +172,30 @@ namespace sveikata.Services
             }
         }
 
-        private string GenerateRefreshToken()
+        public async Task<User> FindByEmailAsync(string email)
         {
-            var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
+            return await _userRepository.FindByEmail(email);
         }
-        private string GenerateJSONWebToken(User user)
+
+
+        private string GenerateJwtToken(User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            string key = _config.GetSection("AppSettings:Token").Value;
+            var issuer = _config.GetSection("AppSettings:Issuer").Value;
+            var expires = DateTime.Now.AddSeconds(int.Parse(_config.GetSection("AppSettings:Expires").Value));
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[]
-            {
-                new Claim("Admin", user.isAdmin.ToString()),
-                new Claim("Id", user.Id.ToString())
-            };
+            var permClaims = new List<Claim>();
+            permClaims.Add(new Claim(ClaimTypes.Name, user.Email.ToString()));
+            permClaims.AddRange(user.UserRoles.Select(ur => new Claim(ClaimsIdentity.DefaultRoleClaimType, ur.Role.Name)));
 
-            var token = new JwtSecurityToken(
-                _config["Jwt:Issuer"],
-                _config["Jwt:Issuer"],
-                claims,
-                expires: DateTime.Now.AddMinutes(5),
-                signingCredentials: credentials
-            );
-
+            var token = new JwtSecurityToken(issuer, //Issure    
+                            issuer,  //Audience    
+                            permClaims,
+                            expires: expires,
+                            signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }

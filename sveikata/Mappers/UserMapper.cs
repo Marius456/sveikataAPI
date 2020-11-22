@@ -15,7 +15,6 @@ namespace sveikata.Mappers
                 Name = user.Name,
                 Email = user.Email,
                 Password = user.Password,
-                isAdmin = user.isAdmin,
                 Comments = ToGetResponse(user.Comments)
             };
         }
@@ -26,8 +25,7 @@ namespace sveikata.Mappers
                 Id = itemDTO.Id,
                 Name = itemDTO.Name,
                 Email = itemDTO.Email,
-                Password = itemDTO.Password,
-                isAdmin = itemDTO.isAdmin
+                Password = itemDTO.Password
             };
         }
         public static ICollection<GetCommentsCollectionResponse> ToGetResponse(ICollection<Comment> comments)

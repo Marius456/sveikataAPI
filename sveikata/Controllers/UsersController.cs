@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using sveikata.DTOs.User;
 using sveikata.DTOs;
 using sveikata.Services.Interfaces;
 using System;
