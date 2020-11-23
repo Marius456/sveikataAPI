@@ -1,9 +1,7 @@
-﻿using sveikata.DTOs.User;
-using sveikata.Models;
-using sveikata.DTOs;
+﻿using sveikata.DTOs;
+using sveikata.DTOs.User;
 using sveikata.Models;
 using sveikata.Services.Responses;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -28,7 +26,6 @@ namespace sveikata.Services.Interfaces
 
 
         Task<Service1Response<AuthenticatedUserDTO>> AuthenticateUserAsync(PostUserDTO UserCredentials);
-        //Task<ServiceResponse<CreatedUserDTO>> CreateUserAsync(PostUserDTO UserCredentials, params ERole[] userRoles);
         Task<User> FindByEmailAsync(string email);
     }
 }

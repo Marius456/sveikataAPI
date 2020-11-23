@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using sveikata.DTOs.User;
-using sveikata.Models;
 using sveikata.DTOs;
+using sveikata.DTOs.User;
 using sveikata.Mappers;
 using sveikata.Models;
 using sveikata.Repositories.Interfaces;
@@ -14,11 +13,8 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using sveikata.Security;
-using AutoMapper;
 
 namespace sveikata.Services
 {
@@ -26,22 +22,16 @@ namespace sveikata.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly ICommentRepository _commentRepository;
-        private readonly IPasswordHasher _passwordHasher;
-        private readonly IMapper _mapper;
         private readonly AppDbContext _context;
         private readonly IConfiguration _config;
 
         public UserService(IUserRepository userRepository,
-                           IPasswordHasher passwordHasher,
-                           IMapper mapper,
                            ICommentRepository commentRepository, 
                            AppDbContext context,
                            IConfiguration config)
         {
             _userRepository = userRepository;
-            _passwordHasher = passwordHasher;
             _commentRepository = commentRepository;
-            _mapper = mapper;
             _context = context;
             _config = config;
         }
@@ -56,7 +46,7 @@ namespace sveikata.Services
                 return new Service1Response<AuthenticatedUserDTO> { Message = errorMessage, Success = false };
             }
 
-            if (!_passwordHasher.PasswordMatches(UserCredentials.Password, user.Password))
+            if (!UserCredentials.Password.Equals(user.Password))
             {
                 var errorMessage = $"Password or login is incorrect";
                 Log.Error(errorMessage);
@@ -64,8 +54,11 @@ namespace sveikata.Services
             }
 
             var token = GenerateJwtToken(user);
-            var authenticatedUserDTO = _mapper.Map<AuthenticatedUserDTO>(user);
-            authenticatedUserDTO.Token = token;
+            var authenticatedUserDTO = new AuthenticatedUserDTO()
+                                            {
+                                                Email = user.Email,
+                                                Token = token
+                                            };
             return new Service1Response<AuthenticatedUserDTO> { Data = authenticatedUserDTO };
         }
 
