@@ -7,7 +7,7 @@ using sveikata.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using sveikata.Models;
 
 namespace sveikata.Controllers
 {
@@ -23,6 +23,7 @@ namespace sveikata.Controllers
         }
 
         // GET: users/<UsersController>
+        [Authorize(Policy = "Admin")]
         [HttpGet]
         public Task<IEnumerable<UserDTO>> GetAll()
         {
@@ -57,6 +58,7 @@ namespace sveikata.Controllers
             return await _userService.GetByComment(id, commentId);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("login")]
         [ProducesResponseType(typeof(AuthenticatedUserDTO), StatusCodes.Status200OK)]
@@ -72,10 +74,11 @@ namespace sveikata.Controllers
         }
 
         // POST users/<UsersController>
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UserDTO item)
         {
-            var result = await _userService.Create(item);
+            var result = await _userService.Create(item, ERole.Common);
             if (!result.Success)
             {
                 return BadRequest(result.Messages);

@@ -170,25 +170,23 @@ namespace sveikata.Services
             return await _userRepository.FindByEmail(email);
         }
 
-
         private string GenerateJwtToken(User user)
         {
-            string key = _config.GetSection("AppSettings:Token").Value;
-            var issuer = _config.GetSection("AppSettings:Issuer").Value;
-            var expires = DateTime.Now.AddSeconds(int.Parse(_config.GetSection("AppSettings:Expires").Value));
-
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var permClaims = new List<Claim>();
             permClaims.Add(new Claim(ClaimTypes.Name, user.Email.ToString()));
             permClaims.AddRange(user.UserRoles.Select(ur => new Claim(ClaimsIdentity.DefaultRoleClaimType, ur.Role.Name)));
 
-            var token = new JwtSecurityToken(issuer, //Issure    
-                            issuer,  //Audience    
-                            permClaims,
-                            expires: expires,
-                            signingCredentials: credentials);
+            var token = new JwtSecurityToken(
+                _config["Jwt:Issuer"],
+                _config["Jwt:Issuer"],
+                permClaims,
+                expires: DateTime.Now.AddMinutes(15),
+                signingCredentials: credentials
+            );
+
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
