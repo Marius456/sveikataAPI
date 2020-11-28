@@ -1,13 +1,17 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using sveikata.Repositories;
 using sveikata.Repositories.Interfaces;
 using sveikata.Services;
 using sveikata.Services.Interfaces;
+using System;
+using System.Text;
 
 namespace sveikata
 {
@@ -79,6 +83,10 @@ namespace sveikata
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseCors(CorsPolicy);
 

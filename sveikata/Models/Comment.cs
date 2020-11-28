@@ -18,5 +18,7 @@ namespace sveikata.Models
 
         [Required(ErrorMessage = "Comment is required.")]
         public string Text { get; set; }
+
+        public virtual User Creator { get; set; }
     }
 }

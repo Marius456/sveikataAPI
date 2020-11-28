@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace sveikata.Models
 {
@@ -20,6 +17,6 @@ namespace sveikata.Models
     public enum ERole
     {
         Common,
-        Administrator
+        Admin
     }
 }

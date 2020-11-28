@@ -84,21 +84,19 @@ namespace sveikata.Migrations
                 name: "UserRoles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: true),
-                    RoleName = table.Column<string>(type: "nvarchar(50)", nullable: true)
+                    UserEmail = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleName = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserRoles", x => x.Id);
+                    table.PrimaryKey("PK_UserRoles", x => new { x.UserEmail, x.RoleName });
                     table.ForeignKey(
                         name: "FK_UserRoles_Roles_RoleName",
                         column: x => x.RoleName,
                         principalTable: "Roles",
                         principalColumn: "Name",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserRoles_Users_UserId",
                         column: x => x.UserId,
@@ -106,6 +104,16 @@ namespace sveikata.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                column: "Name",
+                value: "Common");
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                column: "Name",
+                value: "Admin");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",

@@ -10,7 +10,7 @@ using sveikata;
 namespace sveikata.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201125151217_InitialCreate")]
+    [Migration("20201128104909_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -71,6 +71,16 @@ namespace sveikata.Migrations
                     b.HasKey("Name");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Name = "Common"
+                        },
+                        new
+                        {
+                            Name = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("sveikata.Models.Service", b =>
@@ -120,21 +130,16 @@ namespace sveikata.Migrations
 
             modelBuilder.Entity("sveikata.Models.UserRoles", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("RoleName")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("UserEmail")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserEmail", "RoleName");
 
                     b.HasIndex("RoleName");
 
@@ -145,18 +150,22 @@ namespace sveikata.Migrations
 
             modelBuilder.Entity("sveikata.Models.Comment", b =>
                 {
-                    b.HasOne("sveikata.Models.User", null)
+                    b.HasOne("sveikata.Models.User", "Creator")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("sveikata.Models.UserRoles", b =>
                 {
                     b.HasOne("sveikata.Models.Role", "Role")
                         .WithMany("UsersRole")
-                        .HasForeignKey("RoleName");
+                        .HasForeignKey("RoleName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("sveikata.Models.User", "User")
                         .WithMany("UserRoles")
