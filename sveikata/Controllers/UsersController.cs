@@ -66,9 +66,9 @@ namespace sveikata.Controllers
         [Route("login")]
         [ProducesResponseType(typeof(AuthenticatedUserDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Authenticate([FromBody] PostUserDTO userCredentials)
+        public async Task<IActionResult> Login([FromBody] PostUserDTO userCredentials)
         {
-            var repsonse = await _userService.AuthenticateUserAsync(userCredentials);
+            var repsonse = await _userService.LoginUser(userCredentials);
             if (repsonse.Success == false)
             {
                 return BadRequest(repsonse.Message);
@@ -91,7 +91,7 @@ namespace sveikata.Controllers
 
         // PUT users/<UsersController>/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "Common")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Update(int id, [FromBody] UserDTO item)
         {
             try
@@ -111,7 +111,7 @@ namespace sveikata.Controllers
 
         // DELETE users/<UsersController>/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Common")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try

@@ -36,21 +36,21 @@ namespace sveikata.Services
             _config = config;
         }
 
-        public async Task<Service1Response<AuthenticatedUserDTO>> AuthenticateUserAsync(PostUserDTO UserCredentials)
+        public async Task<LoginResponse<AuthenticatedUserDTO>> LoginUser(PostUserDTO UserCredentials)
         {
             var user = await _userRepository.FindByEmail(UserCredentials.Email);
             if (user == null)
             {
                 var errorMessage = $"Password or login is incorrect";
                 Log.Error(errorMessage);
-                return new Service1Response<AuthenticatedUserDTO> { Message = errorMessage, Success = false };
+                return new LoginResponse<AuthenticatedUserDTO> { Message = errorMessage, Success = false };
             }
 
             if (!UserCredentials.Password.Equals(user.Password))
             {
                 var errorMessage = $"Password or login is incorrect";
                 Log.Error(errorMessage);
-                return new Service1Response<AuthenticatedUserDTO> { Message = errorMessage, Success = false };
+                return new LoginResponse<AuthenticatedUserDTO> { Message = errorMessage, Success = false };
             }
 
             var token = GenerateJwtToken(user);
@@ -59,7 +59,7 @@ namespace sveikata.Services
                                                 Email = user.Email,
                                                 Token = token
                                             };
-            return new Service1Response<AuthenticatedUserDTO> { Data = authenticatedUserDTO };
+            return new LoginResponse<AuthenticatedUserDTO> { Data = authenticatedUserDTO };
         }
 
         public async Task<UserResponse> Create(UserDTO newUser, params ERole[] userRoles)

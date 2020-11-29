@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using sveikata;
 
 namespace sveikata.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201129112125_AddWorkerEnum")]
+    partial class AddWorkerEnum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,26 +60,6 @@ namespace sveikata.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Diseases");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Pirmosios ligos aprasymas",
-                            Name = "Pirmoji liga"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Antrosios ligos aprasymas",
-                            Name = "Antroji liga"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Treciosios ligos aprasymas",
-                            Name = "Trecioji liga"
-                        });
                 });
 
             modelBuilder.Entity("sveikata.Models.Role", b =>
@@ -123,26 +105,6 @@ namespace sveikata.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Services");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Pirmojo gydymo budo aprasymas",
-                            Name = "Pirmasis gydymo budas"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Antrojo gydymo budo aprasymas",
-                            Name = "Antrasis gydymo budas"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Treciojo gydymo budo aprasymas",
-                            Name = "Treciasis gydymo budas"
-                        });
                 });
 
             modelBuilder.Entity("sveikata.Models.User", b =>

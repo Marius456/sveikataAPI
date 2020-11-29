@@ -25,7 +25,7 @@ namespace sveikata.Services.Interfaces
 
 
 
-        Task<Service1Response<AuthenticatedUserDTO>> AuthenticateUserAsync(PostUserDTO UserCredentials);
+        Task<LoginResponse<AuthenticatedUserDTO>> LoginUser(PostUserDTO UserCredentials);
         Task<User> FindByEmailAsync(string email);
     }
 }

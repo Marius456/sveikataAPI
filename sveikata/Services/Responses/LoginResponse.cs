@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace sveikata.Services.Responses
 {
-    public class Service1Response<T>
+    public class LoginResponse<T>
     {
         public T Data { get; set; }
 

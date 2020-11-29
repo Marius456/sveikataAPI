@@ -17,6 +17,7 @@ namespace sveikata.Models
     public enum ERole
     {
         Common,
+        Worker,
         Admin
     }
 }

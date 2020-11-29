@@ -47,7 +47,7 @@ namespace sveikata.Controllers
 
             // POST diseases/<DiseasesController>
             [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Worker,Admin")]
         public async Task<IActionResult> Create([FromBody] DiseaseDTO item)
         {
             var result = await _diseaseService.Create(item);
@@ -60,7 +60,7 @@ namespace sveikata.Controllers
 
         // PUT diseases/<DiseasesController>/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Worker,Admin")]
         public async Task<ActionResult> Update(int id, [FromBody] DiseaseDTO disease)
         {
             try
@@ -80,7 +80,7 @@ namespace sveikata.Controllers
 
         // DELETE diseases/<DiseasesController>/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Worker,Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try

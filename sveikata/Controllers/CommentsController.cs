@@ -52,7 +52,7 @@ namespace sveikata.Controllers
 
         // POST comments/<CommentsController>
         [HttpPost]
-        [Authorize(Roles = "Common")]
+        [Authorize(Roles = "Common,Worker,Admin")]
         public async Task<IActionResult> Create([FromBody] CommentDTO item)
         {
             var result = await _commentService.Create(item);
@@ -65,7 +65,7 @@ namespace sveikata.Controllers
 
         // PUT comments/<CommentsController>/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "Common")]
+        [Authorize(Roles = "Common,Worker,Admin")]
         public async Task<ActionResult> Update(int id, [FromBody] CommentDTO item)
         {
             try
@@ -85,7 +85,7 @@ namespace sveikata.Controllers
 
         // DELETE comments/<CommentsController>/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Common")]
+        [Authorize(Roles = "Common,Worker,Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try
