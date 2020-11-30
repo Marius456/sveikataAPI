@@ -70,7 +70,7 @@ namespace sveikata.Controllers
         {
             try
             {
-                var result = await _commentService.Update(id, item);
+                var result = await _commentService.Update(id, item, User.Identity.Name, User.IsInRole("Admin"));
                 if (!result.Success)
                 {
                     return BadRequest(result.Messages);
@@ -90,7 +90,7 @@ namespace sveikata.Controllers
         {
             try
             {
-                var result = await _commentService.Delete(id);
+                var result = await _commentService.Delete(id, User.Identity.Name, User.IsInRole("Admin"));
                 if (!result.Success)
                 {
                     return BadRequest(result.Messages);

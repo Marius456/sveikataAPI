@@ -15,11 +15,13 @@ namespace sveikata.Services
     public class CommentService : ICommentService
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly IUserRepository _userRepository;
         private readonly AppDbContext _context;
 
-        public CommentService(ICommentRepository commentRepository, AppDbContext context)
+        public CommentService(ICommentRepository commentRepository, IUserRepository userRepository, AppDbContext context)
         {
             _commentRepository = commentRepository;
+            _userRepository = userRepository;
             _context = context;
         }
 
@@ -52,26 +54,6 @@ namespace sveikata.Services
             }
         }
 
-        public async Task<CommentResponse> Delete(int id)
-        {
-            var item = await _commentRepository.GetById(id);
-            if (item == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            try
-            {
-                _commentRepository.Delete(item);
-                await _context.SaveChangesAsync();
-                return new CommentResponse();
-            }
-            catch (Exception exception)
-            {
-                string errorMessage = $"An error occured when deleting the item: {exception.Message}";
-                return new CommentResponse(errorMessage);
-            }
-        }
 
         public async Task<IEnumerable<CommentDTO>> GetAll()
         {
@@ -99,12 +81,20 @@ namespace sveikata.Services
             return (await _commentRepository.GetByUser(id)).Select(CommentMapper.Map).ToList();
         }
 
-        public async Task<CommentResponse> Update(int id, CommentDTO updatedComment)
+        public async Task<CommentResponse> Update(int id, CommentDTO updatedComment, string userMail, bool isAdmin)
         {
             var comment = await _commentRepository.GetById(id);
             if (comment == null)
             {
                 throw new KeyNotFoundException();
+            }
+
+            var user = _userRepository.FindByEmail(userMail);
+            if (comment.UserId != user.Result.Id && !isAdmin)
+            {
+                string errorMessage = "You have no permition to edit this comment.";
+                Log.Error(errorMessage);
+                return new CommentResponse(errorMessage);
             }
 
             comment.Id = updatedComment.Id;
@@ -137,6 +127,34 @@ namespace sveikata.Services
             }
         }
 
-       
+        public async Task<CommentResponse> Delete(int id, string userMail, bool isAdmin)
+        {
+            var item = await _commentRepository.GetById(id);
+            if (item == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var user = _userRepository.FindByEmail(userMail);
+            if (item.UserId != user.Result.Id && !isAdmin)
+            {
+                string errorMessage = "You have no permition to delete this comment.";
+                Log.Error(errorMessage);
+                return new CommentResponse(errorMessage);
+            }
+
+            try
+            {
+                _commentRepository.Delete(item);
+                await _context.SaveChangesAsync();
+                return new CommentResponse();
+            }
+            catch (Exception exception)
+            {
+                string errorMessage = $"An error occured when deleting the item: {exception.Message}";
+                return new CommentResponse(errorMessage);
+            }
+        }
+
     }
 }

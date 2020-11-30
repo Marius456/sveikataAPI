@@ -165,7 +165,7 @@ namespace sveikata.Services
             }
         }
 
-        public async Task<User> FindByEmailAsync(string email)
+        public async Task<User> FindByEmail(string email)
         {
             return await _userRepository.FindByEmail(email);
         }

@@ -16,8 +16,8 @@ namespace sveikata.Services.Interfaces
 
         Task<CommentResponse> Create(CommentDTO item);
 
-        Task<CommentResponse> Update(int id, CommentDTO item);
+        Task<CommentResponse> Update(int id, CommentDTO item, string userMail, bool isAdmin);
 
-        Task<CommentResponse> Delete(int id);
+        Task<CommentResponse> Delete(int id, string userMail, bool isAdmin);
     }
 }
