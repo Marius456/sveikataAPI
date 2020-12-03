@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using sveikata.DTOs;
+using sveikata.DTOs.Errors;
 using sveikata.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -84,7 +85,9 @@ namespace sveikata.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                Error e = new Error();
+                e.Message = "Comment not found.";
+                return NotFound(e);
             }
             return NoContent();
         }
@@ -94,16 +97,25 @@ namespace sveikata.Controllers
         [Authorize(Roles = "Common,Worker,Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            
-            var result = await _commentService.Delete(id, User.Identity.Name, User.IsInRole("Admin"));
 
-            if (!result.Autorise)
+            try
             {
-                return Unauthorized(result.Messages);
+                var result = await _commentService.Delete(id, User.Identity.Name, User.IsInRole("Admin"));
+
+                if (!result.Autorise)
+                {
+                    return Unauthorized(result.Messages);
+                }
+                if (!result.Success)
+                {
+                    return BadRequest(result.Messages);
+                }
             }
-            if (!result.Success)
+            catch (KeyNotFoundException)
             {
-                return BadRequest(result.Messages);
+                Error e = new Error();
+                e.Message = "Comment not found.";
+                return NotFound(e);
             }
             return NoContent();
         }

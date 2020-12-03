@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using sveikata.DTOs;
+using sveikata.DTOs.Errors;
 using sveikata.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -73,7 +74,9 @@ namespace sveikata.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                Error e = new Error();
+                e.Message = "Service not found.";
+                return NotFound(e);
             }
             return NoContent();
         }
@@ -93,7 +96,9 @@ namespace sveikata.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                Error e = new Error();
+                e.Message = "Service not found.";
+                return NotFound(e);
             }
             return NoContent();
         }

@@ -52,27 +52,6 @@ namespace sveikata.Services
             }
         }
 
-        public async Task<ServiceResponse> Delete(int id)
-        {
-            var item = await _serviceRepository.GetById(id);
-            if (item == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            try
-            {
-                _serviceRepository.Delete(item);
-                await _context.SaveChangesAsync();
-                return new ServiceResponse();
-            }
-            catch (Exception exception)
-            {
-                string errorMessage = $"An error occured when deleting the item: {exception.Message}";
-                return new ServiceResponse(errorMessage);
-            }
-        }
-
         public async Task<IEnumerable<ServiceDTO>> GetAll()
         {
             return (await _serviceRepository.GetAll()).Select(ServiceMapper.Map).ToList();
@@ -131,6 +110,27 @@ namespace sveikata.Services
             }
         }
 
-       
+
+        public async Task<ServiceResponse> Delete(int id)
+        {
+            var item = await _serviceRepository.GetById(id);
+            if (item == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            try
+            {
+                _serviceRepository.Delete(item);
+                await _context.SaveChangesAsync();
+                return new ServiceResponse();
+            }
+            catch (Exception exception)
+            {
+                string errorMessage = $"An error occured when deleting the item: {exception.Message}";
+                return new ServiceResponse(errorMessage);
+            }
+        }
+
     }
 }

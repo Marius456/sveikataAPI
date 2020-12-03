@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using sveikata.Models;
+using sveikata.DTOs.Errors;
 
 namespace sveikata.Controllers
 {
@@ -104,7 +105,9 @@ namespace sveikata.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                Error e = new Error();
+                e.Message = "User not found.";
+                return NotFound(e);
             }
             return NoContent();
         }
@@ -124,7 +127,9 @@ namespace sveikata.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                Error e = new Error();
+                e.Message = "User not found.";
+                return NotFound(e);
             }
             return NoContent();
         }

@@ -86,26 +86,6 @@ namespace sveikata.Services
             }
         }
 
-        public async Task<UserResponse> Delete(int id)
-        {
-            var item = await _userRepository.GetById(id);
-            if (item == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            try
-            {
-                _userRepository.Delete(item);
-                await _context.SaveChangesAsync();
-                return new UserResponse();
-            }
-            catch (Exception exception)
-            {
-                string errorMessage = $"An error occured when deleting the item: {exception.Message}";
-                return new UserResponse(errorMessage);
-            }
-        }
 
         public async Task<IEnumerable<UserDTO>> GetAll()
         {
@@ -161,6 +141,27 @@ namespace sveikata.Services
             catch (Exception exception)
             {
                 string errorMessage = $"An error occured when updating the item: {exception.Message}";
+                return new UserResponse(errorMessage);
+            }
+        }
+
+        public async Task<UserResponse> Delete(int id)
+        {
+            var item = await _userRepository.GetById(id);
+            if (item == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            try
+            {
+                _userRepository.Delete(item);
+                await _context.SaveChangesAsync();
+                return new UserResponse();
+            }
+            catch (Exception exception)
+            {
+                string errorMessage = $"An error occured when deleting the item: {exception.Message}";
                 return new UserResponse(errorMessage);
             }
         }
