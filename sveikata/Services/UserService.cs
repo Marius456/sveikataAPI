@@ -183,7 +183,7 @@ namespace sveikata.Services
                 _config["Jwt:Issuer"],
                 _config["Jwt:Issuer"],
                 permClaims,
-                expires: DateTime.Now.AddMinutes(15),
+                expires: DateTime.Now.AddMinutes(5),
                 signingCredentials: credentials
             );
 

@@ -20,6 +20,7 @@ namespace sveikata.Services.Responses
     {
         Success,
         NotFound,
-        BadRequest
+        BadRequest,
+        Forbidden
     }
 }

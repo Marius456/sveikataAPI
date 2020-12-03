@@ -94,7 +94,7 @@ namespace sveikata.Services
             {
                 string errorMessage = "You have no permition to edit this comment.";
                 Log.Error(errorMessage);
-                return new CommentResponse(errorMessage);
+                return new CommentResponse(errorMessage, false);
             }
 
             comment.Id = updatedComment.Id;
@@ -105,13 +105,13 @@ namespace sveikata.Services
             {
                 string errorMessage = "Comment user ID not found.";
                 Log.Error(errorMessage);
-                return new CommentResponse(errorMessage);
+                return new CommentResponse(errorMessage, true);
             }
             if (comment.Text == null)
             {
                 string errorMessage1 = "Comment context not found.";
                 Log.Error(errorMessage1);
-                return new CommentResponse(errorMessage1);
+                return new CommentResponse(errorMessage1, true);
             }
 
             try
@@ -123,7 +123,7 @@ namespace sveikata.Services
             catch (Exception exception)
             {
                 string errorMessage = $"An error occured when updating the item: {exception.Message}";
-                return new CommentResponse(errorMessage);
+                return new CommentResponse(errorMessage, true);
             }
         }
 
@@ -138,9 +138,9 @@ namespace sveikata.Services
             var user = _userRepository.FindByEmail(userMail);
             if (item.UserId != user.Result.Id && !isAdmin)
             {
-                string errorMessage = "You have no permition to delete this comment.";
+                string errorMessage = "You have no permition to edit this comment.";
                 Log.Error(errorMessage);
-                return new CommentResponse(errorMessage);
+                return new CommentResponse(errorMessage, false);
             }
 
             try
@@ -152,7 +152,7 @@ namespace sveikata.Services
             catch (Exception exception)
             {
                 string errorMessage = $"An error occured when deleting the item: {exception.Message}";
-                return new CommentResponse(errorMessage);
+                return new CommentResponse(errorMessage, true);
             }
         }
 

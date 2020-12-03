@@ -71,6 +71,12 @@ namespace sveikata.Controllers
             try
             {
                 var result = await _commentService.Update(id, item, User.Identity.Name, User.IsInRole("Admin"));
+
+                if (!result.Autorise)
+                {
+                    return Unauthorized(result.Messages);
+                }
+
                 if (!result.Success)
                 {
                     return BadRequest(result.Messages);
@@ -88,17 +94,16 @@ namespace sveikata.Controllers
         [Authorize(Roles = "Common,Worker,Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
+            
+            var result = await _commentService.Delete(id, User.Identity.Name, User.IsInRole("Admin"));
+
+            if (!result.Autorise)
             {
-                var result = await _commentService.Delete(id, User.Identity.Name, User.IsInRole("Admin"));
-                if (!result.Success)
-                {
-                    return BadRequest(result.Messages);
-                }
+                return Unauthorized(result.Messages);
             }
-            catch (KeyNotFoundException)
+            if (!result.Success)
             {
-                return NotFound();
+                return BadRequest(result.Messages);
             }
             return NoContent();
         }
