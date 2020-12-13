@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using sveikata.DTOs;
+using sveikata.DTOs.Errors;
 using sveikata.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -51,6 +53,7 @@ namespace sveikata.Controllers
 
         // POST comments/<CommentsController>
         [HttpPost]
+        [Authorize(Roles = "Common,Worker,Admin")]
         public async Task<IActionResult> Create([FromBody] CommentDTO item)
         {
             var result = await _commentService.Create(item);
@@ -63,11 +66,18 @@ namespace sveikata.Controllers
 
         // PUT comments/<CommentsController>/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Common,Worker,Admin")]
         public async Task<ActionResult> Update(int id, [FromBody] CommentDTO item)
         {
             try
             {
-                var result = await _commentService.Update(id, item);
+                var result = await _commentService.Update(id, item, User.Identity.Name, User.IsInRole("Admin"));
+
+                if (!result.Autorise)
+                {
+                    return Unauthorized(result.Messages);
+                }
+
                 if (!result.Success)
                 {
                     return BadRequest(result.Messages);
@@ -75,18 +85,27 @@ namespace sveikata.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                Error e = new Error();
+                e.Message = "Comment not found.";
+                return NotFound(e);
             }
             return NoContent();
         }
 
         // DELETE comments/<CommentsController>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Common,Worker,Admin")]
         public async Task<IActionResult> Delete(int id)
         {
+
             try
             {
-                var result = await _commentService.Delete(id);
+                var result = await _commentService.Delete(id, User.Identity.Name, User.IsInRole("Admin"));
+
+                if (!result.Autorise)
+                {
+                    return Unauthorized(result.Messages);
+                }
                 if (!result.Success)
                 {
                     return BadRequest(result.Messages);
@@ -94,7 +113,9 @@ namespace sveikata.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                Error e = new Error();
+                e.Message = "Comment not found.";
+                return NotFound(e);
             }
             return NoContent();
         }

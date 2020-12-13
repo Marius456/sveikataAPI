@@ -11,11 +11,14 @@ namespace sveikata.Services.Responses
             this.comment = item;
         }
 
-        public CommentResponse() : base(string.Empty, true)
+        public CommentResponse() : base(string.Empty, true, true)
         {
         }
 
         public CommentResponse(string message) : base(message, false)
+        {
+        }
+        public CommentResponse(string message, bool authorise) : base(message, false, authorise)
         {
         }
     }

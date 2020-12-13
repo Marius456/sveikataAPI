@@ -59,26 +59,7 @@ namespace sveikata.Services
             }
         }
 
-        public async Task<DiseaseResponse> Delete(int id)
-        {
-            var item = await _diseaseRepository.GetById(id);
-            if (item == null)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            try
-            {
-                _diseaseRepository.Delete(item);
-                await _context.SaveChangesAsync();
-                return new DiseaseResponse();
-            }
-            catch (Exception exception)
-            {
-                string errorMessage = $"An error occured when deleting the item: {exception.Message}";
-                return new DiseaseResponse(errorMessage);
-            }
-        }
+        
 
         public async Task<IEnumerable<DiseaseDTO>> GetAll()
         {
@@ -114,9 +95,9 @@ namespace sveikata.Services
             disease.Description = updatedDisease.Description;
             if (disease.Name == null)
             {
-                string errorMessage2 = "Disease name not found.";
-                Log.Error(errorMessage2);
-                return new DiseaseResponse(errorMessage2);
+                string errorMessage3 = "Disease name not found.";
+                Log.Error(errorMessage3);
+                return new DiseaseResponse(errorMessage3);
             }
             if (disease.Description == null)
             {
@@ -134,6 +115,27 @@ namespace sveikata.Services
             catch (Exception exception)
             {
                 string errorMessage = $"An error occured when updating the item: {exception.Message}";
+                return new DiseaseResponse(errorMessage);
+            }
+        }
+
+        public async Task<DiseaseResponse> Delete(int id)
+        {
+            var item = await _diseaseRepository.GetById(id);
+            if (item == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            try
+            {
+                _diseaseRepository.Delete(item);
+                await _context.SaveChangesAsync();
+                return new DiseaseResponse();
+            }
+            catch (Exception exception)
+            {
+                string errorMessage = $"An error occured when deleting the item: {exception.Message}";
                 return new DiseaseResponse(errorMessage);
             }
         }

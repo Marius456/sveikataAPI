@@ -1,5 +1,4 @@
-﻿using sveikata.DTOs.UserDTOs;
-using sveikata.Models;
+﻿using sveikata.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +12,11 @@ namespace sveikata.Repositories.Interfaces
 
         Task<User> GetById(int id);
 
-        Task<User> Create(User item);
+        Task<User> Create(User item, ERole[] userRoles);
 
         void Update(User item);
         void Delete(User item);
-        Task<User> GetUser(LoginRequest request);
+
+        Task<User> FindByEmail(string email);
     }
 }

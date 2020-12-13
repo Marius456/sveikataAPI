@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using sveikata.DTOs;
+using sveikata.DTOs.Errors;
 using sveikata.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -46,6 +48,7 @@ namespace sveikata.Controllers
 
             // POST diseases/<DiseasesController>
             [HttpPost]
+        [Authorize(Roles = "Worker,Admin")]
         public async Task<IActionResult> Create([FromBody] DiseaseDTO item)
         {
             var result = await _diseaseService.Create(item);
@@ -58,6 +61,7 @@ namespace sveikata.Controllers
 
         // PUT diseases/<DiseasesController>/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Worker,Admin")]
         public async Task<ActionResult> Update(int id, [FromBody] DiseaseDTO disease)
         {
             try
@@ -70,13 +74,16 @@ namespace sveikata.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                Error e = new Error();
+                e.Message = "Disease not found.";
+                return NotFound(e);
             }
             return NoContent();
         }
 
         // DELETE diseases/<DiseasesController>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Worker,Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -89,7 +96,9 @@ namespace sveikata.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                Error e = new Error();
+                e.Message = "Disease not found.";
+                return NotFound(e);
             }
             return NoContent();
         }

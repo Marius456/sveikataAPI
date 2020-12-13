@@ -25,8 +25,6 @@ namespace sveikata.DTOs
         [StringLength(200, ErrorMessage = "Password cannot exceed 200 characters.")]
         public string Password { get; set; }
 
-        public bool isAdmin { get; set; }
-
         public ICollection<GetCommentsCollectionResponse> Comments { get; set; }
     }
 }

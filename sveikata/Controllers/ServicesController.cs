@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using sveikata.DTOs;
+using sveikata.DTOs.Errors;
 using sveikata.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -46,6 +48,7 @@ namespace sveikata.Controllers
 
         // POST services/<ServicesController>
         [HttpPost]
+        [Authorize(Roles = "Worker,Admin")]
         public async Task<IActionResult> Create([FromBody] ServiceDTO item)
         {
             var result = await _serviceService.Create(item);
@@ -58,6 +61,7 @@ namespace sveikata.Controllers
 
         // PUT services/<ServicesController>/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Worker,Admin")]
         public async Task<ActionResult> Update(int id, [FromBody] ServiceDTO service)
         {
             try
@@ -70,13 +74,16 @@ namespace sveikata.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                Error e = new Error();
+                e.Message = "Service not found.";
+                return NotFound(e);
             }
             return NoContent();
         }
 
         // DELETE services/<ServicesController>/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Worker,Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -89,7 +96,9 @@ namespace sveikata.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                Error e = new Error();
+                e.Message = "Service not found.";
+                return NotFound(e);
             }
             return NoContent();
         }

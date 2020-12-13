@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using sveikata.DTOs.UserDTOs;
 using sveikata.Models;
 using sveikata.Repositories.Interfaces;
 using System;
@@ -18,10 +17,20 @@ namespace sveikata.Repositories
             _context = context;
         }
 
-        public async Task<User> Create(User item)
+        public async Task<User> Create(User user, ERole[] userRoles)
         {
-            await _context.Users.AddAsync(item);
-            return item;
+            //await _context.Users.AddAsync(item);
+
+            var roleNames = userRoles.Select(r => r.ToString()).ToList();
+            var roles = await _context.Roles.Where(r => roleNames.Contains(r.Name)).ToListAsync();
+
+            foreach (var role in roles)
+            {
+                user.UserRoles.Add(new UserRoles { RoleName = role.Name, UserEmail = user.Email });
+            }
+
+            _context.Users.Add(user);
+            return user;
         }
 
         public Task<List<User>> GetAll()
@@ -43,9 +52,11 @@ namespace sveikata.Repositories
             _context.Users.Remove(item);
         }
 
-        public async Task<User> GetUser(LoginRequest request)
+        public async Task<User> FindByEmail(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(user => user.Email == request.Email && user.Password == request.Password);
+            return await _context.Users.Include(u => u.UserRoles)
+                                       .ThenInclude(ur => ur.Role)
+                                       .SingleOrDefaultAsync(u => u.Email == email);
         }
     }
 }
