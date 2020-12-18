@@ -1,0 +1,50 @@
+<div class="card">  
+    <div class="card-header" style="text-align:center">  
+        <b>Comments</b>  
+    </div>  
+    <div class="card-body">  
+        <form [formGroup]="FromComment" (ngSubmit)="UpdateId();CreateComment(FromComment.value)">  
+            <div class="row">  
+                <div class="form-group col-sm-3">  
+                    <label for="company">Comment User ID</label>  
+                    <input type="number" class="form-control" formControlName="UserId" id="company" placeholder="Enter Comment User ID" >  
+                    </div>  
+                    <div class="form-group col-sm-3">  
+                        <label for="company">Text</label>  
+                        <input type="text" class="form-control" formControlName="Text" id="Text" placeholder="Enter Text" >  
+                        </div>  
+                            </div>  
+                            <div class="row">  
+                                <div class="form-group col-sm-3">  
+                                    <div Id="Id"></div>
+                                    <button type="submit" class="btn btn-primary" >Add Comment</button>  
+                                </div>  
+                            </div>  
+                        </form>  
+                    </div>  
+                    <div class="card-footer">  
+                        <div class="col-lg-12 table-responsive">  
+                            <table class="table table-striped">  
+                                <thead>  
+                                    <tr>  
+                                        <th>Id</th>  
+                                        <th>Comment user id</th>  
+                                        <th>Text</th> 
+                                        <th></th>  
+                                    </tr>  
+                                </thead>  
+                                <tbody>  
+                                    <tr *ngFor="let Comment of allComments | async">  
+                                        <td>{{Comment.id}}</td>  
+                                        <td>{{Comment.userId}}</td>  
+                                        <td>{{Comment.text}}</td>  
+                                        <td>  
+                                            <button type="button" class="btn btn-primary mr-1" (click)="EditComment(Comment.id)">Edit</button>  
+                                            <button type="button" class="btn btn-danger mr-1" (click)="DeleteComment(Comment.id)">Delete</button>  
+                                        </td>  
+                                    </tr>  
+                                </tbody>  
+                            </table>  
+                        </div>  
+                    </div>  
+                </div>    

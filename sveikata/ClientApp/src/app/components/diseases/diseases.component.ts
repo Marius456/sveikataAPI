@@ -30,7 +30,6 @@ export class DiseasesComponent implements OnInit {
     this.FromDisease.patchValue({
       Id: this.Id,
     })
-    debugger;
   }
 
   Reset()    
@@ -72,9 +71,6 @@ export class DiseasesComponent implements OnInit {
   } 
 
   UpdateDisease(DiseaseId: number, Disease: Disease) {
-    
-    debugger;
-
     this.DiseaseService.updateDisease(DiseaseId, Disease)
     .subscribe(() => {  
             this.dataSaved = true;  

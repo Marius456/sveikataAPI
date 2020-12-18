@@ -23,7 +23,6 @@ export class DiseaseService {
   }  
 
   updateDisease(DiseaseId: number, disease: Disease): Observable<Disease> {
-    debugger;
     return this.http.put<Disease>(this.Url + DiseaseId, disease)
   }  
 
