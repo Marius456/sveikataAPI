@@ -12,6 +12,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import { ServicesComponent } from './components/services/services.component';
 import { CommentsComponent } from './components/comments/comments.component';
 import { UsersComponent } from './components/users/users.component';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { UsersComponent } from './components/users/users.component';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
+    AngularSvgIconModule.forRoot(),
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'diseases', component: DiseasesComponent },

@@ -3,6 +3,8 @@ import { Comment } from '../../entities/comment';
 import { CommentService } from '../../services/comment.service';   
 import { NgForm, FormBuilder, FormGroup, Validators, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { UserService } from 'src/app/services/user.service';
+import { User } from 'src/app/entities/user';
 
 @Component({
   selector: 'app-comments',
@@ -10,17 +12,21 @@ import { Observable } from 'rxjs';
 })
 export class CommentsComponent implements OnInit {
 
+  allUsers:Observable<User[]>; 
+  foundUser:Observable<User>;
   dataSaved = false;    
   message:string;    
   FromComment: any;    
   Id:number=0;    
   allComments:Observable<Comment[]>;    
-  constructor(private formbuilder: FormBuilder,private CommentService:CommentService) { }    
+  constructor(private formbuilder: FormBuilder,
+    private CommentService:CommentService,
+    private UserService:UserService) { }    
   
   ngOnInit(): void {  
     this.FromComment = this.formbuilder.group({  
       Id: [0, [Validators.required]],  
-      UserId: [0, [Validators.required]],  
+      UserId: [null, [Validators.required]],  
       Text: ['', [Validators.required]],  
     });  
       this.GetComment();  
@@ -36,7 +42,7 @@ export class CommentsComponent implements OnInit {
   {    
     
     this.Id = 0;  
-    this.FromComment.controls['UserId'].setValue(0);  
+    this.FromComment.controls['UserId'].setValue(null);  
     this.FromComment.controls['Text'].setValue('');  
    // this.FromComment.reset();  
   }
@@ -44,6 +50,12 @@ export class CommentsComponent implements OnInit {
   GetComment()    
   {      
     this.allComments=this.CommentService.getComments();    
+    this.allUsers= this.UserService.getUsers(); 
+  } 
+  
+  GetUser(id : string)    
+  {         
+    this.foundUser = this.UserService.getUser(id); 
   } 
 
   CreateComment(Comment: Comment) {
