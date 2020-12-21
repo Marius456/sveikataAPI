@@ -71,7 +71,8 @@ namespace sveikata.Controllers
         {
             try
             {
-                var result = await _commentService.Update(id, item, User.Identity.Name, User.IsInRole("Admin"));
+                var result = await _commentService.Update(id, item, "admin@asd.lt", true);
+                //var result = await _commentService.Update(id, item, User.Identity.Name, User.IsInRole("Admin"));
 
                 if (!result.Autorise)
                 {
@@ -100,7 +101,8 @@ namespace sveikata.Controllers
 
             try
             {
-                var result = await _commentService.Delete(id, User.Identity.Name, User.IsInRole("Admin"));
+                var result = await _commentService.Delete(id, "admin@asd.lt", true);
+                ////var result = await _commentService.Delete(id, User.Identity.Name, User.IsInRole("Admin"));
 
                 if (!result.Autorise)
                 {

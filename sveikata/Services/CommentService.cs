@@ -134,7 +134,7 @@ namespace sveikata.Services
             {
                 throw new KeyNotFoundException();
             }
-
+            
             var user = _userRepository.FindByEmail(userMail);
             if (item.UserId != user.Result.Id && !isAdmin)
             {

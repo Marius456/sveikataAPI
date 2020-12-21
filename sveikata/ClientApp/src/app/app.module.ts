@@ -13,6 +13,7 @@ import { ServicesComponent } from './components/services/services.component';
 import { CommentsComponent } from './components/comments/comments.component';
 import { UsersComponent } from './components/users/users.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { FooterComponent } from './nav-menu/footer.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
     DiseasesComponent,
     ServicesComponent,
     CommentsComponent,
-    UsersComponent
+    UsersComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
