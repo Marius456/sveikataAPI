@@ -24,7 +24,7 @@ namespace sveikata.Controllers
         }
 
         // GET: users/<UsersController>
-        [Authorize(Roles = "Admin")]
+//        [Authorize(Roles = "Admin")]
         [HttpGet]
         public Task<IEnumerable<UserDTO>> GetAll()
         {
@@ -33,7 +33,7 @@ namespace sveikata.Controllers
 
         // GET users/<UsersController>/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+//        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorDTO), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserDTO>> GetById( int id)
@@ -49,14 +49,14 @@ namespace sveikata.Controllers
         }
 
         [HttpGet("{id}/comments")]
-        [Authorize(Roles = "Admin")]
+//        [Authorize(Roles = "Admin")]
         public async Task<IEnumerable<CommentDTO>> GetUserCommentsList(int id)
         {
             return await _userService.GetUserCommentsList(id);
         }
 
         [HttpGet("{id}/comments/{commentId}")]
-        [Authorize(Roles = "Admin")]
+//        [Authorize(Roles = "Admin")]
         public async Task<IEnumerable<CommentDTO>> GetUserComment(int id, int commentId)
         {
             return await _userService.GetByComment(id, commentId);
@@ -92,7 +92,7 @@ namespace sveikata.Controllers
 
         // PUT users/<UsersController>/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+//        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Update(int id, [FromBody] UserDTO item)
         {
             try
@@ -114,7 +114,7 @@ namespace sveikata.Controllers
 
         // DELETE users/<UsersController>/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+//        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try

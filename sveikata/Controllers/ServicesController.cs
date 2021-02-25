@@ -48,7 +48,7 @@ namespace sveikata.Controllers
 
         // POST services/<ServicesController>
         [HttpPost]
-        [Authorize(Roles = "Worker,Admin")]
+ //       [Authorize(Roles = "Worker,Admin")]
         public async Task<IActionResult> Create([FromBody] ServiceDTO item)
         {
             var result = await _serviceService.Create(item);
@@ -61,7 +61,7 @@ namespace sveikata.Controllers
 
         // PUT services/<ServicesController>/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "Worker,Admin")]
+ //       [Authorize(Roles = "Worker,Admin")]
         public async Task<ActionResult> Update(int id, [FromBody] ServiceDTO service)
         {
             try
@@ -83,7 +83,7 @@ namespace sveikata.Controllers
 
         // DELETE services/<ServicesController>/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Worker,Admin")]
+//        [Authorize(Roles = "Worker,Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try

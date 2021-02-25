@@ -53,7 +53,7 @@ namespace sveikata.Controllers
 
         // POST comments/<CommentsController>
         [HttpPost]
-        [Authorize(Roles = "Common,Worker,Admin")]
+//        [Authorize(Roles = "Common,Worker,Admin")]
         public async Task<IActionResult> Create([FromBody] CommentDTO item)
         {
             var result = await _commentService.Create(item);
@@ -66,12 +66,13 @@ namespace sveikata.Controllers
 
         // PUT comments/<CommentsController>/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "Common,Worker,Admin")]
+//        [Authorize(Roles = "Common,Worker,Admin")]
         public async Task<ActionResult> Update(int id, [FromBody] CommentDTO item)
         {
             try
             {
-                var result = await _commentService.Update(id, item, User.Identity.Name, User.IsInRole("Admin"));
+                var result = await _commentService.Update(id, item, "admin@asd.lt", true);
+                //var result = await _commentService.Update(id, item, User.Identity.Name, User.IsInRole("Admin"));
 
                 if (!result.Autorise)
                 {
@@ -94,13 +95,14 @@ namespace sveikata.Controllers
 
         // DELETE comments/<CommentsController>/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Common,Worker,Admin")]
+//      [Authorize(Roles = "Common,Worker,Admin")]
         public async Task<IActionResult> Delete(int id)
         {
 
             try
             {
-                var result = await _commentService.Delete(id, User.Identity.Name, User.IsInRole("Admin"));
+                var result = await _commentService.Delete(id, "admin@asd.lt", true);
+                ////var result = await _commentService.Delete(id, User.Identity.Name, User.IsInRole("Admin"));
 
                 if (!result.Autorise)
                 {
