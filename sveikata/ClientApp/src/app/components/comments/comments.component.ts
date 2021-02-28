@@ -3,8 +3,8 @@ import { Comment } from '../../entities/comment';
 import { CommentService } from '../../services/comment.service';   
 import { NgForm, FormBuilder, FormGroup, Validators, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { UserService } from 'src/app/services/user.service';
-import { User } from 'src/app/entities/user';
+import { UserService } from '@/services/user.service';
+import { User } from '@/entities/user';
 
 @Component({
   selector: 'app-comments',
